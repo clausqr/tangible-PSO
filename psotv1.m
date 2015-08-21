@@ -1,14 +1,12 @@
 % psotv1
 % script to test and run the PSO for swarm trajectories
 clear
-hold off
-addpath('digraph')
-addpath('World')
+%hold off
+addpath('PSO')
 addpath('UAV')
-addpath('RRT')
 
-% amount of Agents
-N_Agents = 1;
+% Agents count
+N_Agents = 2;
 
 % Starting position, attitude and initial velocity
 Path.Start.pos(:,1) = [0.1; 0.1; 0.5];
@@ -34,38 +32,31 @@ Path.Goal.pos(:,2) = [0.8; 0.9; 0.5];
 Path.Goal.state(:,2) = [Path.Goal.pos(:,2); 0; 0];
 Path.Goal.Radius(2) = 0.125;
 
-% our world is a square [0; 1]x[0; 1], the following image represents
-% this square, ObstacleMap is a matrix of the same size as the image.
-w = World('shape4.png');
-w.ShowObstacleMap(w);
+% % plot starting positions and goal
+% for k = 1:N_Agents
+%     hold on
+%     PlotCircle(Path.Start.pos(:,k), Path.Goal.Radius(k)/8, 3, 'Green');
+%     PlotPoint(Path.Start.pos(:,k), '*g');
+%     PlotCircle(Path.Goal.pos(:,k), Path.Goal.Radius(k), 3, 'Red');
+%     PlotPoint(Path.Goal.pos(:,k), '*r');
+% end
 
-% plot starting positions and goal
-for k = 1:N_Agents
-    hold on
-    PlotCircle(Path.Start.pos(:,k), Path.Goal.Radius(k)/8, 3, 'Green');
-    PlotPoint(Path.Start.pos(:,k), '*g');
-    PlotCircle(Path.Goal.pos(:,k), Path.Goal.Radius(k), 3, 'Red');
-    PlotPoint(Path.Goal.pos(:,k), '*r');
-end
-
-
+%%
 % Initialize states, PSO and world.
+p = PSO(@sin);
+
 for k = 1:N_Agents
     
-    % Construct the initial state vector of the k-th Agent
-    InitialState{k} = Path.Start.state(:,k);
+    % Initialize the k-th Agent
+    a(k) = UAV(Path.Start.state(:,k)); %#ok<SAGROW>
     
-    % Initialize the Agent
-    r(k) = UAV(InitialState{k});
-    
-    g(k) = RRT(r(k),...
-        w);
-    
-    % Add the starting vertex to the RRT graph
-    g(k).AddVertexFromState(InitialState{k});
+    % and add it to the PSO
+    p.AddAgent(a(k));
     
 end
 
+
+%%
 hold on
 
 % Max number of iterations

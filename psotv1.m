@@ -1,7 +1,7 @@
 % psotv1
 % script to test and run the PSO for swarm trajectories
 clear
-%hold off
+clf
 addpath('PSO')
 addpath('UAV')
 addpath('SWARM')
@@ -17,7 +17,7 @@ N_Agents = 3;
 Path.Start = createPathStartingPoints(N_Agents);
 Path.Goal = createPathGoals(N_Agents);
 
-%PlotStartingPointandGoals(N_Agents, Path);
+PlotStartingPointandGoals(N_Agents, Path);
 
 %% Initialize the Swarm and PSO
 s = SWARM();

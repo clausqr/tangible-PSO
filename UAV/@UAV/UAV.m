@@ -1,4 +1,4 @@
-classdef UAV < handle
+classdef UAV < matlab.mixin.Copyable
     % UAV Set of functions to model a UAV and manipulate its state space.
     % (c) https://github.com/clausqr for ECI2015
     %  

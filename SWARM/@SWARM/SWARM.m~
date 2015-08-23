@@ -129,9 +129,8 @@ classdef SWARM < matlab.mixin.Copyable
        function cpObj = copyElement(obj)
           % Make a shallow copy of all properties at hand.
          cpObj = copyElement@matlab.mixin.Copyable(obj);
-         % Make a deep copy of the Agent object, which is in itself
-         % matlab.mixin.Copyable
-         cpObj.Agent = copy(obj.Agent);
+         % Make a deep copy of the DeepCp object
+         cpObj.DeepObj = copy(obj.DeepObj);
        end
        
     end

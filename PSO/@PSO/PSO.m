@@ -18,11 +18,12 @@ classdef PSO < matlab.mixin.Copyable
         end
     
         function obj = Iterate(obj)
-           for k = 1:2%obj.ParticlesCount
+           for k = 1:obj.ParticlesCount
                x = obj.Particle(k).Agent.State;
                y = obj.Particle(k).Agent.getNewRandomState;
                u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
                obj.Particle(k).Agent.UpdateState(u);
+               obj.Particle(k).Agent.PlotState(obj.Particle(k).Agent.State,'.k');
            end
         end
     end

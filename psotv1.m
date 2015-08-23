@@ -4,56 +4,30 @@ clear
 %hold off
 addpath('PSO')
 addpath('UAV')
+addpath('SWARM')
 
 % Particles count
-N_Particles = 2;
+N_Particles = 3;
 
-% Starting position, attitude and initial velocity
-Path.Start.pos(:,1) = [0.1; 0.1; 0.5];
-Path.Start.vel(:,1) = 0.025;
-Path.Start.ang(:,1) = -pi/2;
-Path.Start.state(:,1) = [Path.Start.pos(:,1); ...
-    Path.Start.vel(:,1); ...
-    Path.Start.ang(:,1)];
+% Agent count (Physical count of robots, each particle consists of 
+% N_Agent agents)
+N_Agents = 3;
 
-% Starting position, attitude and initial velocity
-Path.Start.pos(:,2) = [0.2; 0.1; 0.5];
-Path.Start.vel(:,2) = 0.025;
-Path.Start.ang(:,2) = -pi/2;
-Path.Start.state(:,2) = [Path.Start.pos(:,2); ...
-    Path.Start.vel(:,2); ...
-    Path.Start.ang(:,2)];
+% Starting point and Goal points moved to individual functions for clarity
+Path.Start = createPathStartingPoints(N_Agents);
+Path.Goal = createPathGoals(N_Agents);
 
-% Goal and goal size.
-Path.Goal.pos(:,1) = [0.9; 0.9; 0.5];
-Path.Goal.state(:,1) = [Path.Goal.pos(:,1); 0; 0];
-Path.Goal.Radius(1) = 0.125;
-Path.Goal.pos(:,2) = [0.8; 0.9; 0.5];
-Path.Goal.state(:,2) = [Path.Goal.pos(:,2); 0; 0];
-Path.Goal.Radius(2) = 0.125;
+PlotStartingPointandGoals(N_Agents, Path);
 
-% % plot starting positions and goal
-% for k = 1:N_Particles
-%     hold on
-%     PlotCircle(Path.Start.pos(:,k), Path.Goal.Radius(k)/8, 3, 'Green');
-%     PlotPoint(Path.Start.pos(:,k), '*g');
-%     PlotCircle(Path.Goal.pos(:,k), Path.Goal.Radius(k), 3, 'Red');
-%     PlotPoint(Path.Goal.pos(:,k), '*r');
-% end
-
-%%
-% Initialize states, PSO and world.
-p = PSO(@sin);
-
-for k = 1:N_Particles
-    
-    % Initialize the k-th Particle
-    a(k) = UAV(Path.Start.state(:,k)); %#ok<SAGROW>
-    
-    % and add it to the PSO
-    p.AddParticle(a(k));
-    
+%% Initialize the Swarm
+s = SWARM();
+for k = 1:N_Agents
+    s.AddAgent(UAV(Path.Start.state(:, k)));
 end
+
+%% Initialize PSO and world.
+p = PSO(s, N_Particles, @sin);
+
 
 
 %%

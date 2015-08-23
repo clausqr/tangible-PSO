@@ -12,18 +12,18 @@ classdef PSO < matlab.mixin.Copyable
     
     methods (Access = public)
         
-        function obj = PSO(Agent, ParticleCount, CostFunction)
+        function obj = PSO(Agent, Count, CostFunction)
             % PSO Constructor
-            obj = obj.reset(Agent, ParticleCount, CostFunction);
+            obj = obj.reset(CostFunction);
         end
         
         function obj = AddParticle(obj, a)
             % PSO Constructor
             n = obj.ParticlesCount;
             if (n == 0)
-                obj.Particle.Agent = a;
+                obj.Particle = a;
             else
-                obj.Particle(n+1).Agent = a;
+                obj.Particle(n+1) = a;
             end
             obj.ParticlesCount = n+1;
         end
@@ -31,12 +31,9 @@ classdef PSO < matlab.mixin.Copyable
     end
     
     methods (Access = private)
-        function obj = reset(obj, Agent, ParticleCount, CostFunction)
+        function obj = reset(obj, CostFunction)
             obj.CostFunction = CostFunction;
             obj.ParticlesCount = 0;
-            for k = 1:ParticleCount
-                obj.AddParticle(Agent)
-            end
         end
     end
 end

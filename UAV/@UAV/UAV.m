@@ -1,4 +1,4 @@
-classdef UAV < handle
+classdef UAV < matlab.mixin.Copyable
     % UAV Set of functions to model a UAV and manipulate its state space.
     % (c) https://github.com/clausqr for ECI2015
     %  
@@ -21,9 +21,11 @@ classdef UAV < handle
     methods (Access = public)
         
         % Constructor
-        function obj = UAV(InitialState)
-            
-            obj.Init(InitialState);
+        function obj = UAV(varargin)
+            if (nargin == 1)
+                % InitialState = varargin
+                obj.Init(varargin{1});
+            end
             
         end
         
@@ -45,6 +47,9 @@ classdef UAV < handle
             obj.CurrentIterationStep = k+1;
         end
 
+        % MOVED FROM STATIC
+                controls = InverseKinematicsFcn(obj, FromState, ToState)  % Inverse Dynamics (or Kinematics) function
+
     end
     
     % Following static methods are implemented here so they can be called
@@ -53,9 +58,7 @@ classdef UAV < handle
     methods (Static)
        
         newstate = StateTransitionFcn(State, Controls)  % State Transition function
-        
-        controls = InverseKinematics(FromState, ToState)  % Inverse Dynamics (or Kinematics) function
-        
+
         d = DistanceInStateSpace(x, y) % Function to compute distance between a pair of states
         
         us = ControlsShuffle(u) % Function used to generate several variations of a control input, used for branching

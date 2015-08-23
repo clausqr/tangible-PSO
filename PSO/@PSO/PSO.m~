@@ -4,21 +4,49 @@ classdef PSO < matlab.mixin.Copyable
     % (c) https://github.com/clausqr for ECI2015
     properties (GetAccess = public, SetAccess = protected)
         
-        Agent           % Array of agents
-        CostFunction    % Cost function used to weight the fitness 
+        Particle           % Array of Particles
+        ParticlesCount     % Number of Particles
+        CostFunction       % Cost function used to weight the fitness
         
     end
     
     methods (Access = public)
-        function obj = PSO(CostFunction)
+        
+        function obj = PSO(Agent, ParticleCount, CostFunction)
             % PSO Constructor
-            obj = obj.reset(CostFunction);
+            obj = obj.reset(Agent, ParticleCount, CostFunction);
+        end
+    
+        function obj = Iterate(obj)
+           for k = 1:2%obj.ParticlesCount
+               x = obj.Particle(k).Agent.State;
+               y = obj.Particle(k).Agent.getNewRandomState;
+               u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
+               obj.Particle(k).Agent.UpdateState(u);
+           end
         end
     end
     
     methods (Access = private)
-        function obj = reset(obj, CostFunction)
+        
+        function obj = AddParticle(obj, a)
+            % PSO Constructor
+            n = obj.ParticlesCount;
+            if (n == 0)
+                obj.Particle.Agent = a;
+            else
+                obj.Particle(n+1).Agent = a;
+            end
+            obj.ParticlesCount = n+1;
+        end
+        function obj = reset(obj, Agent, ParticleCount, CostFunction)
             obj.CostFunction = CostFunction;
+            obj.ParticlesCount = 0;
+            for k = 1:ParticleCount
+                %copy
+                a = copy(Agent);
+                obj.AddParticle(a)
+            end
         end
     end
 end

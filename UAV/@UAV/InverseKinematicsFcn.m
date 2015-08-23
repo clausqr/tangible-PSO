@@ -15,14 +15,14 @@ delta_theta = AngleYtoX - current_state_angle;
 % b = -0.05;
 % delta_v = a*DistanceYtoX + b*(obj.State(4)-0.05);
 
-max_delta_theta = pi/8;
-if delta_theta > max_delta_theta
-    delta_theta = max_delta_theta;
-elseif delta_theta < -max_delta_theta
-    delta_theta = -max_delta_theta;
-else
-    delta_theta = 0;
-end
+% max_delta_theta = pi/8;
+% if delta_theta > max_delta_theta
+%     delta_theta = max_delta_theta;
+% elseif delta_theta < -max_delta_theta
+%     delta_theta = -max_delta_theta;
+% else
+%     delta_theta = 0;
+% end
 
 delta_v = 0;
 

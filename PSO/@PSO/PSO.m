@@ -3,29 +3,27 @@ classdef PSO < matlab.mixin.Copyable
     %
     % (c) https://github.com/clausqr for ECI2015
     properties (GetAccess = public, SetAccess = protected)
-        
-        Particle           % Array of Particles
-        ParticlesCount     % Number of Particles
-        CostFunction       % Cost function used to weight the fitness
+
+        ParticlesCount      % Number of Particles
+        Particle            % Array of Particles
+                            % Particle Fields:
+                            %       Particle.Fitness    
+                            %       Particle.BestState
+        GlobalBestState     % Best state overall
+        GlobalFitness       % And keep track of best global fitness
+        CostFcn             % Cost function used to weight the fitness
+        Goal                % Goal of optimization
         
     end
     
     methods (Access = public)
         
-        function obj = PSO(Agent, ParticleCount, CostFunction)
+        function obj = PSO(Agent, ParticleCount, Goal, CostFcn)
             % PSO Constructor
-            obj = obj.reset(Agent, ParticleCount, CostFunction);
+            obj = obj.reset(Agent, ParticleCount, Goal, CostFcn);
         end
-    
-        function obj = Iterate(obj)
-           for k = 1:obj.ParticlesCount
-               x = obj.Particle(k).Agent.State;
-               y = obj.Particle(k).Agent.getNewRandomState;
-               u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
-               obj.Particle(k).Agent.UpdateState(u);
-               obj.Particle(k).Agent.PlotState(obj.Particle(k).Agent.State,'.k');
-           end
-        end
+        
+        obj = Iterate(obj);
     end
     
     methods (Access = private)
@@ -35,14 +33,21 @@ classdef PSO < matlab.mixin.Copyable
             n = obj.ParticlesCount;
             if (n == 0)
                 obj.Particle.Agent = a;
+                obj.Particle.Fitness = [];
+                obj.Particle.BestState = a.InitialState;
             else
                 obj.Particle(n+1).Agent = a;
+                obj.Particle(n+1).Fitness = [];
+                obj.Particle(n+1).BestState = a.InitialState;
             end
             obj.ParticlesCount = n+1;
         end
-        function obj = reset(obj, Agent, ParticleCount, CostFunction)
-            obj.CostFunction = CostFunction;
+        function obj = reset(obj, Agent, ParticleCount, Goal, CostFcn)
+            obj.CostFcn = CostFcn;
             obj.ParticlesCount = 0;
+            obj.GlobalBestState = Agent.InitialState;
+            [nxg, nyg] = size(Goal.state);
+            obj.Goal.State = reshape(Goal.state, nxg*nyg, 1);
             for k = 1:ParticleCount
                 % copy the Agent passed as a reference, don't touch the
                 % original. Each copy will behave separately. Agent needs

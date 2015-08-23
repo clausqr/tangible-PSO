@@ -1,4 +1,4 @@
-classdef SWARM < handle
+classdef SWARM < matlab.mixin.Copyable
     % SWARM Set of functions to model a Agent SWARM and manipulate its state space.
     % (c) https://github.com/clausqr for ECI2015
     %
@@ -32,6 +32,7 @@ classdef SWARM < handle
         function obj = SWARM()
             
             obj.AgentCount = 0;
+            obj.CurrentIterationStep = 1;
         end
         
         function obj = AddAgent(obj, a)
@@ -53,7 +54,7 @@ classdef SWARM < handle
             k = n+1;
             idxs = (obj.n_states*(k-1)+1):(obj.n_states*k);
             obj.State(idxs,1) = obj.Agent(k).State;
-            
+            obj.InitialState(idxs,1) = obj.Agent(k).InitialState;
             
             obj.AgentCount = n+1;
             
@@ -76,6 +77,7 @@ classdef SWARM < handle
                 idxs = (obj.n_states*(k-1)+1):(obj.n_states*k);
                 obj.Agent(k).Init(InitialStates(idxs));
                 obj.State(idxs) = obj.Agent(k).State;
+                obj.InitialState(idxs,1) = obj.Agent(k).InitialState;
             end
         end
         
@@ -99,6 +101,11 @@ classdef SWARM < handle
                 obj.Agent(k).UpdateState(u(idxs_inputs));
                 obj.State(idxs_states) = obj.Agent(k).State;
             end
+            
+            % Save history
+            k = obj.CurrentIterationStep;
+            obj.StateHistory{k} = obj.State;
+            obj.CurrentIterationStep = k+1;
         end
         
         % Following function can't be static, depends on number of states

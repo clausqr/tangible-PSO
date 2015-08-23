@@ -16,6 +16,18 @@ classdef PSO < matlab.mixin.Copyable
             % PSO Constructor
             obj = obj.reset(Agent, ParticleCount, CostFunction);
         end
+    
+        function obj = Iterate(obj)
+           for k = 1:2%obj.ParticlesCount
+               x = obj.Particle(k).Agent.State;
+               y = obj.Particle(k).Agent.getNewRandomState;
+               u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
+               obj.Particle(k).Agent.UpdateState(u);
+           end
+        end
+    end
+    
+    methods (Access = private)
         
         function obj = AddParticle(obj, a)
             % PSO Constructor
@@ -27,15 +39,18 @@ classdef PSO < matlab.mixin.Copyable
             end
             obj.ParticlesCount = n+1;
         end
-        
-    end
-    
-    methods (Access = private)
         function obj = reset(obj, Agent, ParticleCount, CostFunction)
             obj.CostFunction = CostFunction;
             obj.ParticlesCount = 0;
             for k = 1:ParticleCount
-                obj.AddParticle(Agent)
+                % copy the Agent passed as a reference, don't touch the
+                % original. Each copy will behave separately. Agent needs
+                % to be a subclass of matlab.mixin.Copyable superclass,
+                % otherwise this won't work and we'd be moving the same
+                % agent in different directions instead of cloning them.
+                % For detail see http://www.mathworks.com/help/matlab/ref/matlab.mixin.copyable-class.html
+                a = copy(Agent);
+                obj.AddParticle(a)
             end
         end
     end

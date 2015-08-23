@@ -5,8 +5,8 @@ clear
 addpath('PSO')
 addpath('UAV')
 
-% Agents count
-N_Agents = 2;
+% Particles count
+N_Particles = 2;
 
 % Starting position, attitude and initial velocity
 Path.Start.pos(:,1) = [0.1; 0.1; 0.5];
@@ -33,7 +33,7 @@ Path.Goal.state(:,2) = [Path.Goal.pos(:,2); 0; 0];
 Path.Goal.Radius(2) = 0.125;
 
 % % plot starting positions and goal
-% for k = 1:N_Agents
+% for k = 1:N_Particles
 %     hold on
 %     PlotCircle(Path.Start.pos(:,k), Path.Goal.Radius(k)/8, 3, 'Green');
 %     PlotPoint(Path.Start.pos(:,k), '*g');
@@ -45,13 +45,13 @@ Path.Goal.Radius(2) = 0.125;
 % Initialize states, PSO and world.
 p = PSO(@sin);
 
-for k = 1:N_Agents
+for k = 1:N_Particles
     
-    % Initialize the k-th Agent
+    % Initialize the k-th Particle
     a(k) = UAV(Path.Start.state(:,k)); %#ok<SAGROW>
     
     % and add it to the PSO
-    p.AddAgent(a(k));
+    p.AddParticle(a(k));
     
 end
 
@@ -61,19 +61,19 @@ hold on
 
 % Max number of iterations
 N_max_iterations = 400;
-% initialize distance logging into d, d(k, i) is the k-th agent distance to
+% initialize distance logging into d, d(k, i) is the k-th Particle distance to
 % the goal on the i-th iteration
-d = zeros(N_Agents, N_max_iterations);
+d = zeros(N_Particles, N_max_iterations);
 % Initialize variables for the while loop
 i = 1;
-for k = 1:N_Agents
-    d(k, i) = g(k).getDistanceToState(Path.Goal.state(:,k));
+for k = 1:N_Particles
+    d(k, i) = p(k).getDistanceToState(Path.Goal.state(:,k));
 end
 Path.Goal.Reached = false;
 
 while (i < N_max_iterations) && ~Path.Goal.Reached
     
-    for k = 1:N_Agents
+    for k = 1:N_Particles
         
         g(k).Grow();
         d(k, i) = g(k).getDistanceToState(Path.Goal.state(:,k));
@@ -81,7 +81,7 @@ while (i < N_max_iterations) && ~Path.Goal.Reached
         
     end
     drawnow update
-    Path.Goal.Reached = logical(sum(d(k, i) < Path.Goal.Radius(1:N_Agents)) >= N_Agents);
+    Path.Goal.Reached = logical(sum(d(k, i) < Path.Goal.Radius(1:N_Particles)) >= N_Particles);
     i = i+1;
 end
 
@@ -90,7 +90,7 @@ d = d(:, 1:i-1);
 
 %%
 % actually find the path!
-for k = 1:N_Agents
+for k = 1:N_Particles
     [Path.States, Path.Controls] = g(k).FindPathBetweenStates(Path.Start.state(:,k),...
                                 Path.Goal.state(:,k));
     % Plot it!
@@ -106,7 +106,7 @@ hold on
     xlabel('Iterations [n]');
     ylabel('Distance [normalized]');
 
-for k = 1:N_Agents
+for k = 1:N_Particles
     plot(d(k,:))
 end
 

@@ -84,6 +84,10 @@ classdef SWARM < matlab.mixin.Copyable
         % Updates the state of the actual instance
         function obj = UpdateState(obj, u)
             
+            % Save history
+            k = obj.CurrentIterationStep;
+            obj.StateHistory{k} = obj.State;
+            obj.CurrentIterationStep = k+1;
             
             n = obj.AgentCount;
             
@@ -102,10 +106,7 @@ classdef SWARM < matlab.mixin.Copyable
                 obj.State(idxs_states) = obj.Agent(k).State;
             end
             
-            % Save history
-            k = obj.CurrentIterationStep;
-            obj.StateHistory{k} = obj.State;
-            obj.CurrentIterationStep = k+1;
+
         end
         
         % Following function can't be static, depends on number of states

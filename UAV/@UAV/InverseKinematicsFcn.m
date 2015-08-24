@@ -1,30 +1,59 @@
 function u = InverseKinematicsFcn(obj, x, y)
 % INVERSEKINEMATICS Inverse Dynamics (or Kinematics) function,
-%   finds the right control inputs to go towards a desired state, 
-% starting from the current state.        
-        
+%   finds the right control inputs to go towards a desired state,
+% starting from the current state.
+
 AngleYtoX = atan2(y(2)-x(2), y(1)-x(1));
-%DistanceYtoX = norm(x-y);
+DistanceYtoX = norm(x(1:2)-y(1:2));
+
 current_state_angle = x(5);
+current_vel = x(4);
+
+saturation = true;
 
 
 delta_theta = AngleYtoX - current_state_angle;
 %steering only control
+ref_vel = 0.025;
 
-% a = 0.005;
-% b = -0.05;
-% delta_v = a*DistanceYtoX + b*(obj.State(4)-0.05);
+%   a = 0.05;
+%   b = 0.15;
+%  delta_v = a*DistanceYtoX + b*(ref_vel-current_vel);
 
-% max_delta_theta = pi/8;
-% if delta_theta > max_delta_theta
-%     delta_theta = max_delta_theta;
-% elseif delta_theta < -max_delta_theta
-%     delta_theta = -max_delta_theta;
-% else
-%     delta_theta = 0;
+
+a = 2;
+delta_v = -current_vel + a*ref_vel*rand(1) ;
+
+%delta_v = -current_vel + a*DistanceYtoX;
+
+% max_delta_v = 0.03;
+% delta_v = -current_vel + DistanceYtoX;
+% if delta_v > max_delta_v
+%     delta_v = max_delta_v;
+% elseif delta_v < -max_delta_v
+%     delta_v = -max_delta_v;
 % end
 
-delta_v = 0;
+% unwinding
+if delta_theta > pi
+    delta_theta= delta_theta- 2*pi;
+elseif delta_theta < -pi
+    delta_theta= delta_theta+ 2*pi;
+end
+
+
+% Saturation in angle steering
+max_delta_theta = pi/8;
+if saturation
+    if delta_theta > max_delta_theta
+        delta_theta = max_delta_theta;
+    elseif delta_theta < -max_delta_theta
+        delta_theta = -max_delta_theta;
+    else
+      %  delta_theta = 0;
+    end
+end
+
 
 u = [delta_v; delta_theta];
 

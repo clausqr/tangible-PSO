@@ -11,6 +11,7 @@ classdef PSO < matlab.mixin.Copyable
                             %       Particle.BestState
         GlobalBestState     % Best state overall
         GlobalFitness       % And keep track of best global fitness
+        GlobalFitnessHistory% log it here
         CostFcn             % Cost function used to weight the fitness
         Goal                % Goal of optimization
         
@@ -45,6 +46,7 @@ classdef PSO < matlab.mixin.Copyable
         function obj = reset(obj, Agent, ParticleCount, Goal, CostFcn)
             obj.CostFcn = CostFcn;
             obj.ParticlesCount = 0;
+            obj.GlobalFitnessHistory = [];
             obj.GlobalBestState = Agent.InitialState;
             [nxg, nyg] = size(Goal.state);
             obj.Goal.State = reshape(Goal.state, nxg*nyg, 1);

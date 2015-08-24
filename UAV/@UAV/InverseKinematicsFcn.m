@@ -9,18 +9,17 @@ DistanceYtoX = norm(x(1:2)-y(1:2));
 current_state_angle = x(5);
 current_vel = x(4);
 
-angle_saturation = false;
-max_delta_theta = pi/8;
+% choose wether to saturate controls
 vel_saturation = false;
+angle_saturation = false;
+
+max_delta_theta = pi/8;
+
 ref_vel = 0.025;
-max_vel = ref_vel;
-max_delta_v = 1/8*ref_vel;
+max_vel = 5*ref_vel;
+vel_step = ref_vel/4;
 
 delta_theta = AngleYtoX - current_state_angle;
-%steering only control
-
-
-
 
 % unwinding
 if delta_theta > pi
@@ -41,34 +40,23 @@ if angle_saturation
     end
 end
 
-
-%   a = 0.05;
-%   b = 0.15;
-% delta_v = a*DistanceYtoX + b*(ref_vel-current_vel);
-
-
-a = 0.85;
-% delta_v = -current_vel + a*ref_vel*rand(1) ;
-
 if ~vel_saturation
-  delta_v = -current_vel + a*DistanceYtoX;
+    a = 0.85; % damping to avoid error acumulation
+    delta_v = -current_vel + a*DistanceYtoX;
 else
-    a = a*(1+cos(AngleYtoX))/2;
-    delta_v = -current_vel+a*DistanceYtoX+ref_vel*(1-cos(AngleYtoX)); %+max_delta_v*(rand(1)*2-1)/2;
+ 
+    delta_v = vel_step*(2*rand(1)-1)/2;
+    new_current_vel = current_vel + delta_v;
     
-    % if (current_vel+delta_v) > max_vel
-    %     delta_v = -(current_vel-max_vel);
-    % elseif (current_vel+delta_v) < 0
-    %     delta_v = -current_vel;
-    % else
-    %     if delta_v > max_delta_v
-    %         delta_v = max_delta_v;
-    %     elseif delta_v < -max_delta_v
-    %         delta_v = -max_delta_v;
-    %     else
-    %         delta_v =0;
-    %     end
-    % end
+    if new_current_vel > max_vel
+        delta_v = -(max_vel - new_current_vel) - vel_step;
+    elseif current_vel < 0
+        delta_v = -new_current_vel + vel_step;
+    else
+        
+    end
+        
+    
     
 end
 

@@ -15,7 +15,9 @@ for k = 1:obj.ParticlesCount
     if (n == 1)
         x = obj.Particle(k).Agent.State;
         y = obj.Particle(k).Agent.getNewRandomState;
-        u = obj.Particle(k).Agent.InverseKinematicsFcn(x, x+y/10);
+        % Launch the particles at random at the first iteration
+        u = obj.Particle(k).Agent.InverseKinematicsFcn(x, x+y/30);
+        
         obj.Particle(k).Agent.UpdateState(u);
         y = obj.Particle(k).Agent.State;
     else

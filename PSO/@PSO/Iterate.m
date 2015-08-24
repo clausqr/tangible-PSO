@@ -4,50 +4,47 @@ persistent h2
 persistent h3
 persistent h4
 persistent h5
-persistent y
-persistent y_old
+
 % propagate step
 
 % //TODO: See how particle velocity is handled (independently of Agent
 % velocity) check (1).
 for k = 1:obj.ParticlesCount
-    x = obj.Particle(k).Agent.State;
+    
     n = obj.Particle(k).Agent.CurrentIterationStep;
     if (n == 1)
         y = obj.Particle(k).Agent.getNewRandomState;
-        y_old = y;
+        x = obj.Particle(k).Agent.getNewRandomState;
     else
-        state_vel = y-y_old;
-        aa = 1;       % how much to leave to randomness between best global and best of particle
-        ab = 1;       % bias point between best global and best of particle
-                        % ab = 1, aa = 0  ->  deterministically use
-                        %   particles' best state
-                        % ab = 0, aa = 0  ->  deterministically use
-                        %   global best state
-                        % ab = 1,  aa = 1  ->  randomly determine wether
-                        %   particle's or global best state will be used
-        ar = ab*((1-aa)+aa*rand(1)); % composition
-        ac = 0.05;      % how much of bias towards random point
-
-        if ~isempty(obj.Particle(k).Fitness)
-            d = 0.5;%*obj.Particle(k).Fitness;
-        else
-            d = 0;
-        end
-        a = (1-ac)*(  ar);
-        b = (1-ac)*(1-ar);
-        c = ac;
-        z = a*obj.Particle(k).BestState + ...
-            b*obj.GlobalBestState + ...
-            c*obj.Particle(k).Agent.getNewRandomState;
-        y_old = y;
-        y = z + d*state_vel;
-        
+        % Using nomenclature of 
+        % [1]	M. Saska, J. Chudoba, L. Precil, J. Thomas, G. Loianno, A. Tresnak, V. Vonasek, and V. Kumar, ?Autonomous deployment of swarms of micro-aerial vehicles in cooperative surveillance,? 2014 International Conference on Unmanned Aircraft Systems (ICUAS), pp. 584?595, 2014.
+        %  bj: "[...] Each particle remembers its state with the best
+        %   function value (cost function) visited so far; later called the
+        %   individual best position of j-th PSO particle and denoted as bj
+        %   [...]"
+        bj = obj.Particle(k).BestState;
+        %  bg:  "[...] The social knowledge is represented by the best
+        %   position visited by a particle in the whole population; later
+        %   called the global best position and denoted bg. [...]
+        bg = obj.GlobalBestState;
+        %  pj, uj: "[...] In the PSO algorithm, each particle j is represented by
+        %   its D-dimensional position pj(t) and its current velocity vector
+        %   uj(t). [...]"
+        pj = obj.Particle(k).Agent.State;
+        uj = obj.Particle(k).StateVel;
+        %  fi1, fi2: "[...] where \Phi1 and \Phi2 are obtained as [...]
+        fi1 = diag(rand(size(pj)));
+        fi2 = diag(rand(size(pj)));
+        uj = uj + fi1*(bj - pj) + fi2*(bg-pj);
+        x = pj;
+        pj = pj + uj;
+        y = pj;
+        obj.Particle(k).StateVel = uj;
         if k == 1
-           if ishandle(h5)
-                delete(h5)
-            end
-            h5 = obj.Particle(k).Agent.PlotState(z,'xg');
+%            if ishandle(h5)
+%                 delete(h5)
+%             end
+%             h5 = obj.Particle(k).Agent.PlotState(z,'xg');
             if ishandle(h4)
                 delete(h4)
             end
@@ -60,8 +57,9 @@ for k = 1:obj.ParticlesCount
     end    
     u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
     obj.Particle(k).Agent.UpdateState(u);
+    z = obj.Particle(k).Agent.State;
     if k == 1      
-        obj.Particle(k).Agent.PlotStateTransition(x, obj.Particle(k).Agent.State);
+        obj.Particle(k).Agent.PlotStateTransition(x, z);
     end
 end
 

@@ -13,7 +13,7 @@ u2 = abs(norm(x(1:2)-x(5:6))-0.1);
 u3 = abs(norm(x(10:11)-x(5:6))-0.1);
 u4 = abs(norm(x(1:2)-x(10:11))-0.1*sqrt(2));
     
-u = 3*u1 + u2 + u3 + u4;
+u = u1 + u2 + u3 + u4;
 
 
 else

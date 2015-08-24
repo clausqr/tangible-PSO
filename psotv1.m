@@ -33,7 +33,7 @@ p = PSO(s, N_Particles, Path.Goal, @CostFcn);
     p.Iterate();
     drawnow update
     %%
-for k = 1:600
+for k = 1:60
     p.Iterate();
     drawnow update
 end

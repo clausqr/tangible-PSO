@@ -36,10 +36,12 @@ classdef PSO < matlab.mixin.Copyable
                 obj.Particle.Agent = a;
                 obj.Particle.Fitness = [];
                 obj.Particle.BestState = a.InitialState;
+                obj.Particle.StateVel = zeros(size(a.InitialState));
             else
                 obj.Particle(n+1).Agent = a;
                 obj.Particle(n+1).Fitness = [];
                 obj.Particle(n+1).BestState = a.InitialState;
+                obj.Particle(n+1).StateVel = zeros(size(a.InitialState));
             end
             obj.ParticlesCount = n+1;
         end

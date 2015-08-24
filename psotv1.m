@@ -7,7 +7,7 @@ addpath('UAV')
 addpath('SWARM')
 
 % Particles count
-N_Particles = 13;
+N_Particles = 25;
 
 % Agent count (Physical count of robots, each particle consists of 
 % N_Agent agents)
@@ -33,7 +33,7 @@ p = PSO(s, N_Particles, Path.Goal, @CostFcn);
     p.Iterate();
     drawnow update
     %%
-for k = 1:150
+for k = 1:75
     p.Iterate();
     drawnow update
 end

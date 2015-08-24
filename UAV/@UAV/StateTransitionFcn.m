@@ -12,6 +12,13 @@ delta_theta = input(2);  %commanded steering change in angle
 newv = v + delta_v;
 newtheta = theta + delta_theta;
 
+% unwinding
+if newtheta > pi
+    newtheta = newtheta - 2*pi;
+elseif newtheta < -pi
+    newtheta = newtheta + 2*pi;
+end
+
 newx = x + newv*cos(newtheta);
 newy = y + newv*sin(newtheta);
 newz = z;

@@ -13,8 +13,11 @@ for k = 1:obj.ParticlesCount
     
     n = obj.Particle(k).Agent.CurrentIterationStep;
     if (n == 1)
+        x = obj.Particle(k).Agent.State;
         y = obj.Particle(k).Agent.getNewRandomState;
-        x = obj.Particle(k).Agent.getNewRandomState;
+        u = obj.Particle(k).Agent.InverseKinematicsFcn(x, x+y/10);
+        obj.Particle(k).Agent.UpdateState(u);
+        y = obj.Particle(k).Agent.State;
     else
         % Using nomenclature of 
         % [1]	M. Saska, J. Chudoba, L. Precil, J. Thomas, G. Loianno, A. Tresnak, V. Vonasek, and V. Kumar, ?Autonomous deployment of swarms of micro-aerial vehicles in cooperative surveillance,? 2014 International Conference on Unmanned Aircraft Systems (ICUAS), pp. 584?595, 2014.
@@ -39,7 +42,7 @@ for k = 1:obj.ParticlesCount
         x = pj;
         pj = pj + uj;
         y = pj;
-        obj.Particle(k).StateVel = uj;
+
         if k == 1
 %            if ishandle(h5)
 %                 delete(h5)
@@ -58,7 +61,9 @@ for k = 1:obj.ParticlesCount
     u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
     obj.Particle(k).Agent.UpdateState(u);
     z = obj.Particle(k).Agent.State;
-    if k == 1      
+    obj.Particle(k).StateVel = z - x;
+    if k == 1 
+        %BREAKPOINT HERE TO LOOK AT EACH STEP
         obj.Particle(k).Agent.PlotStateTransition(x, z);
     end
 end

@@ -7,7 +7,7 @@ addpath('UAV')
 addpath('SWARM')
 
 % Particles count
-N_Particles = 50;
+N_Particles = 150;
 
 % Agent count (Physical count of robots, each particle consists of 
 % N_Agent agents)

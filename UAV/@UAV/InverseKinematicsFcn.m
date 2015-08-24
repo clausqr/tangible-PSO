@@ -9,8 +9,9 @@ DistanceYtoX = norm(x(1:2)-y(1:2));
 current_state_angle = x(5);
 current_vel = x(4);
 
-angle_saturation = true;
+angle_saturation = false;
 max_delta_theta = pi/8;
+vel_saturation = false;
 ref_vel = 0.025;
 max_vel = ref_vel;
 max_delta_v = 1/8*ref_vel;
@@ -46,27 +47,30 @@ end
 % delta_v = a*DistanceYtoX + b*(ref_vel-current_vel);
 
 
-a = 0.9;
+a = 0.85;
 % delta_v = -current_vel + a*ref_vel*rand(1) ;
 
-%delta_v = -current_vel + a*DistanceYtoX;
-a = a*(1+cos(AngleYtoX))/2;
-delta_v = -current_vel+a*DistanceYtoX+ref_vel*(1-cos(AngleYtoX)); %+max_delta_v*(rand(1)*2-1)/2;
-
-% if (current_vel+delta_v) > max_vel
-%     delta_v = -(current_vel-max_vel);
-% elseif (current_vel+delta_v) < 0
-%     delta_v = -current_vel;
-% else
-%     if delta_v > max_delta_v
-%         delta_v = max_delta_v;
-%     elseif delta_v < -max_delta_v
-%         delta_v = -max_delta_v;
-%     else
-%         delta_v =0;
-%     end
-% end
-
+if ~vel_saturation
+  delta_v = -current_vel + a*DistanceYtoX;
+else
+    a = a*(1+cos(AngleYtoX))/2;
+    delta_v = -current_vel+a*DistanceYtoX+ref_vel*(1-cos(AngleYtoX)); %+max_delta_v*(rand(1)*2-1)/2;
+    
+    % if (current_vel+delta_v) > max_vel
+    %     delta_v = -(current_vel-max_vel);
+    % elseif (current_vel+delta_v) < 0
+    %     delta_v = -current_vel;
+    % else
+    %     if delta_v > max_delta_v
+    %         delta_v = max_delta_v;
+    %     elseif delta_v < -max_delta_v
+    %         delta_v = -max_delta_v;
+    %     else
+    %         delta_v =0;
+    %     end
+    % end
+    
+end
 
 u = [delta_v; delta_theta];
 

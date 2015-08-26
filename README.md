@@ -2,7 +2,7 @@
 
 Particle Swarm Optimization for Formation Flying, written in Matlab, with Agent delegation to classes.
 
-!/Volumes/Mavericks HD/Users/claus/Dropbox/Code/eci15/ECI15-PSO/sample-PSO-run.gif
+![Example run  of tangible PSO animation](https://raw.githubusercontent.com/clausqr/tangible-PSO/master/sample-PSO-run.gif)
 
 *Sample run, large red circles are the goals, small red circles are global best UAV positions, starting points are green, and particle 1 trajectory is shown.*
 
@@ -41,28 +41,33 @@ The aim is to experiment with the algorithms, not to optimize them for performan
 An example script is included, but it's pretty straightforward:  
 
 Create a Swarm:  
-''' s = SWARM()
-
+```matlab
+s = SWARM()
+```
 Add agents:
-''' s.AddAgent(UAV(Path.Start.state))
+```matlab
+s.AddAgent(UAV(Path.Start.state))
+```
 
 Initialize the PSO:
-''' p = PSO(s, N_Particles, Path.Goal, @CostFcn)
+```matlab
+p = PSO(s, N_Particles, Path.Goal, @CostFcn)
+```
 
 Iterate:
-''' p.Iterate()
+```matlab
+p.Iterate()
+```
 
 ## Value Tuning
 
 Typically with 20 particles (Swarms of 3 UAVs) the convergence is in less than 50 steps.
 
- 
-
-
-
 ## References
 
-<a name="cite1">[1]</a>. J. Kennedy and R. Eberhart, “Particle swarm optimization,” in Pro-ceedings International Conference on Neural Networks IEEE, vol. 4,1995, pp. 1942–1948.
+<a name="cite1">[1]</a>. J. Kennedy and R. Eberhart, “Particle swarm optimization,” in Pro-
+ceedings International Conference on Neural Networks IEEE, vol. 4,
+1995, pp. 1942–1948.
 
 <a name="cite2">[2]</a>.	M. Saska, J. Chudoba, L. Precil, J. Thomas, G. Loianno, A. Tresnak, V. Vonasek, and V. Kumar, “Autonomous deployment of swarms of micro-aerial vehicles in cooperative surveillance,” 2014 International Conference on Unmanned Aircraft Systems (ICUAS), pp. 584–595, 2014.
 

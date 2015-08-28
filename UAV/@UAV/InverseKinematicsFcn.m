@@ -10,7 +10,7 @@ current_state_angle = x(5);
 current_vel = x(4);
 
 % choose wether to saturate controls
-vel_saturation = false;
+vel_saturation = true;
 angle_saturation = false;
 
 max_delta_theta = pi/8;

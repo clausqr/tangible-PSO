@@ -1,6 +1,10 @@
-function  Start = createPathStartingPoints(N_Agents)
+function  Start = createPathStartingPoints(varargin)
 
+N_Agents = varargin{1};
 InitialVelocity = 0.025;
+
+
+if nargin == 1
 
 if N_Agents == 3
     
@@ -37,4 +41,21 @@ else
             Start.ang(:,k)];
     end
 end
+else
+        if strcmp(varargin{2}, 'calesita')
+        r = varargin{3};
+        d_alpha = 2*pi/N_Agents;
+        for k = 1:N_Agents
+            % Goal and goal size.
+            
+             Start.pos(:,k) = [0.5+r*cos(d_alpha*k); 0.5+r*sin(d_alpha*k); 0.5];
+             Start.state(:,k) = [Start.pos(:,k);...
+                 InitialVelocity * rand(1);...
+                 2*pi*rand(1) - pi];
+
+        end
+    end
+    
+end
+
 

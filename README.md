@@ -36,6 +36,11 @@ The aim is to experiment with the algorithms, not to optimize them for performan
 1. The PSO core method is in a separate file ( Iterate.M), for easy experimentation.
 1. Cost Function is passed as a parameter to the PSO class, for easy experimentation. 
 
+## Can your formation follow a 5-pointed star shape?
+
+![Example run  of tangible PSO animation](https://raw.githubusercontent.com/clausqr/tangible-PSO/master/sample-PSO-run2.gif)
+*You name it, just specify the goals and the cost function will take care.*
+
 ## How to run it?
 
 An example script is included, but it's pretty straightforward:  

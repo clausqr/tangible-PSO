@@ -21,7 +21,7 @@ for k = 1:obj.ParticlesCount
         obj.Particle(k).Agent.UpdateState(u);
         y = obj.Particle(k).Agent.State;
     else
-        % Using nomenclature of 
+        % Using nomenclature of
         % [1]	M. Saska, J. Chudoba, L. Precil, J. Thomas, G. Loianno, A. Tresnak, V. Vonasek, and V. Kumar, ?Autonomous deployment of swarms of micro-aerial vehicles in cooperative surveillance,? 2014 International Conference on Unmanned Aircraft Systems (ICUAS), pp. 584?595, 2014.
         %  bj: "[...] Each particle remembers its state with the best
         %   function value (cost function) visited so far; later called the
@@ -44,12 +44,12 @@ for k = 1:obj.ParticlesCount
         x = pj;
         pj = pj + uj;
         y = pj;
-
+        
         if k == 1
-%            if ishandle(h5)
-%                 delete(h5)
-%             end
-%             h5 = obj.Particle(k).Agent.PlotState(z,'xg');
+            %            if ishandle(h5)
+            %                 delete(h5)
+            %             end
+            %             h5 = obj.Particle(k).Agent.PlotState(z,'xg');
             if ishandle(h4)
                 delete(h4)
             end
@@ -59,15 +59,16 @@ for k = 1:obj.ParticlesCount
             end
             h1 = obj.Particle(k).Agent.PlotState(x,'.k');
         end
-    end    
+    end
     u = obj.Particle(k).Agent.InverseKinematicsFcn(x, y);
     obj.Particle(k).Agent.UpdateState(u);
     z = obj.Particle(k).Agent.State;
     obj.Particle(k).StateVel = z - x;
-    if k == 1 
+    if k == 1
         %BREAKPOINT HERE TO LOOK AT EACH STEP
         obj.Particle(k).Agent.PlotStateTransition(x, z);
     end
+    
 end
 
 % evaluate fitness for each particle
@@ -121,5 +122,6 @@ if ishandle(h3)
     delete(h3)
 end
 h3 = obj.Particle(k).Agent.PlotState(obj.GlobalBestState,'or');
+obj.GlobalBestStateHistory = [obj.GlobalBestStateHistory obj.GlobalBestState];
 
 end

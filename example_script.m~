@@ -7,23 +7,23 @@ addpath('UAV')
 addpath('SWARM')
 
 % Save a gif with the results?
-savegif = true;
+savegif = false;
 
 % Particles count
-N_Particles = 25;
+N_Particles = 40;
 
 % Iterations
-N_Iterations = 45;
+N_Iterations = 80;
 
-% Agent count (Physical count of robots, each particle consists of
+% Agent count (Physical count of robots, each particle consists of 
 % N_Agent agents)
 N_Agents = 5;
 
 % Starting point and Goal points moved to individual functions for clarity
 Path.Start = createPathStartingPoints(N_Agents,'calesita', 0.05);
 Path.Goal = createPathGoals(N_Agents, 'calesita', 0.3, 0);
-axis([0 1 0 1]);
-axis square
+    axis([0 1 0 1]);
+    axis square
 h_goals = PlotStartingPointandGoals(N_Agents, Path);
 
 %% Initialize the Swarm and PSO
@@ -32,33 +32,40 @@ for k = 1:N_Agents
     s.AddAgent(UAV(Path.Start.state(:, k)));
 end
 
-% Initialize PSO
+% Initialize PSO 
 p = PSO(s, N_Particles, Path.Goal, @CostFcn);
 
 %% Iterate PSO
 
-p.Iterate();
-drawnow update
-%%
-
-if savegif
-    filename = 'sample-PSO-run2.gif';
-end
+    p.Iterate();
+    drawnow update
+    %%
+    
+    if savegif
+    filename = 'sample-PSO-run.gif';
+    end
 for k = 1:N_Iterations
     p.Iterate();
     
     drawnow update
     axis([0 1 0 1])
-
+       
     if savegif
-        frame = getframe(1);
-        im = frame2im(frame);
-        [imind,cm] = rgb2ind(im,256);
-        if k == 1;
-            imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-        else
-            imwrite(imind,cm,filename,'gif','WriteMode','append');
-        end
+       rame = getframe(1);
+      im = frame2im(frame);
+      [imind,cm] = rgb2ind(im,256);
+      if k == 1;
+          imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+      else
+          imwrite(imind,cm,filename,'gif','WriteMode','append');
+      end
     end
 end
+%% Plot best path
+for k = 1:N_Iterations
+    x 
+    p.Particle(k).Agent.PlotState(x,'.r');
+end
+
+
 

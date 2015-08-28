@@ -3,13 +3,14 @@ classdef PSO < matlab.mixin.Copyable
     %
     % (c) https://github.com/clausqr for ECI2015
     properties (GetAccess = public, SetAccess = protected)
-
+        
         ParticlesCount      % Number of Particles
         Particle            % Array of Particles
-                            % Particle Fields:
-                            %       Particle.Fitness    
-                            %       Particle.BestState
+        % Particle Fields:
+        %       Particle.Fitness
+        %       Particle.BestState
         GlobalBestState     % Best state overall
+        GlobalBestStateHistory  % and its history
         GlobalFitness       % And keep track of best global fitness
         GlobalFitnessHistory% log it here
         CostFcn             % Cost function used to weight the fitness
@@ -25,6 +26,11 @@ classdef PSO < matlab.mixin.Copyable
         end
         
         obj = Iterate(obj);
+        
+        function obj = UpdateGoal(obj, Goal)
+            [nxg, nyg] = size(Goal.state);
+            obj.Goal.State = reshape(Goal.state, nxg*nyg, 1);
+        end
     end
     
     methods (Access = private)
@@ -45,10 +51,14 @@ classdef PSO < matlab.mixin.Copyable
             end
             obj.ParticlesCount = n+1;
         end
+        
+        
+        
         function obj = reset(obj, Agent, ParticleCount, Goal, CostFcn)
             obj.CostFcn = CostFcn;
             obj.ParticlesCount = 0;
             obj.GlobalFitnessHistory = [];
+            obj.GlobalBestState = [];
             obj.GlobalBestState = Agent.InitialState;
             [nxg, nyg] = size(Goal.state);
             obj.Goal.State = reshape(Goal.state, nxg*nyg, 1);

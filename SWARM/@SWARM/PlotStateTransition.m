@@ -3,8 +3,7 @@ function h = PlotStateTransition(obj, varargin)
 hold on
 us = varargin{1};
 vs = varargin{2};
-if nargin >3
-    e = varargin{3};
+if nargin > 3
     color = varargin{4};
     width = varargin{5};
 end
